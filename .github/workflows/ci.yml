@@ -20,20 +20,31 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
       - name: Setup Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@d7f3a2b1c4e5f60718293a4b5c6d7e8f90123456 # v7
         with:
           node-version: 24
           cache: npm
           package-manager-cache: false
+
+      - name: Verify lockfile
+        run: test -f package-lock.json
+
       - name: Install
-        run: npm install
+        run: npm ci
+
       - name: Lint
         run: npm run lint
+
       - name: Typecheck
         run: npm run typecheck
+
       - name: Test
         run: npm test
+
       - name: Build
         run: npm run build
