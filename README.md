@@ -1,25 +1,39 @@
 # ALCHEMIST_WORLD
 
-Ancient Alchemist Creator — world simulation foundation.
+Ancient Alchemist Creator — unified world simulation foundation.
 
-## Current E2E progression
+## FULL progression
 
 - v2.4 Institutions + Law
 - v2.5 Territory + Cities + Infrastructure
 - v2.6 Populations + Civil Services
+- v2.7 Logistics + Supply Chains
+- v2.8 Ecology + Climate
+- v3.0 FULL Unified World Generator
 
-The v2.6 browser prototype models population groups, needs, civil services, happiness, migration, public trust and their feedback into world stability.
+## v3.0 integrated layers
 
-## v2.6 core loop
+WORLD CORE → AGENTS → SOCIAL/CULTURE → POLITY → CITIES → ECONOMY → LOGISTICS → ECOLOGY
 
-POPULATION → NEEDS → SERVICES → HAPPINESS → MIGRATION/GROWTH → WORLD EFFECT
+The FULL browser prototype integrates:
+- world state, time, causality and persistent history
+- agent goals, actions, memory, trust and reputation
+- relationships, collective memory, norms and culture
+- factions, diplomacy, institutions and law
+- cities, populations, civil services and infrastructure
+- economy, industry, production, trade and market prices
+- logistics routes and resource movement
+- climate, water, soil, biodiversity, regeneration and environmental pressure
 
-## Prototype APIs
+## FULL prototype API
 
-- `AAC_V26.state()`
-- `AAC_V26.tick()`
-- `AAC_V26.service()`
-- `AAC_V26.crisis()`
-- `AAC_V26.reset()`
+- `AAC_FULL.state()`
+- `AAC_FULL.tick()`
+- `AAC_FULL.agentAction()`
+- `AAC_FULL.produce()`
+- `AAC_FULL.trade()`
+- `AAC_FULL.conflict()`
+- `AAC_FULL.restore()`
+- `AAC_FULL.reset()`
 
-Build artifact is maintained alongside the repository release work.
+The browser artifact is a prototype integration layer. It is not an Android APK/iOS IPA.
