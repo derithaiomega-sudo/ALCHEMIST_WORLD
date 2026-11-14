@@ -1,6 +1,6 @@
 # World State
 
-Phase: v0.8 Builder Agent vertical slice
+Phase: v0.8 Builder Agent vertical slice — execution boundary validated
 
 ## Established
 
@@ -26,7 +26,7 @@ Phase: v0.8 Builder Agent vertical slice
 ## Validation status
 
 - v0.7 Policy & Event Integrity passed lint, typecheck, tests, and build on commit 2e0c35f.
-- Builder execution tests have been added; latest CI validation is pending.
+- Builder execution tests passed in GitHub Actions on commit 3a95136 (lint, typecheck, tests, build).
 - The current Builder boundary uses injected executor and approval-verifier interfaces. It is not yet connected to GitHub or filesystem operations.
 - Event-log checksum is not cryptographic or tamper-proof; storage is in-memory only.
 
