@@ -5,3 +5,5 @@ export * from "./memory.js";
 export * from "./agent.js";
 export * from "./capabilities.js";
 export * from "./runtime.js";
+export * from "./policy.js";
+export * from "./event-log.js";
