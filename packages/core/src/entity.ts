@@ -52,6 +52,9 @@ export type WorldEventType =
   | "entity.updated"
   | "relationship.created"
   | "memory.recorded"
+  | "knowledge.created"
+  | "knowledge.updated"
+  | "memory.recalled"
   | "agent.action.completed";
 
 export interface WorldEvent<TPayload extends Record<string, unknown> = Record<string, unknown>> {
