@@ -17,19 +17,23 @@
 - [x] Deterministic default-deny policy evaluator
 - [x] Explicit deny precedence
 - [x] Resource patterns and context conditions
+- [x] Tool-effect/action compatibility checks
 - [x] Approval-required decision state
-- [x] Append-only in-memory event log
-- [x] Hash-chain integrity verification and replay
+- [x] Append-only in-memory event log and replay
+- [x] Hash-chain integrity verification
 - [ ] Durable event storage and concurrency control
 - [ ] Trusted approval service and policy administration
 
-## v0.8 — Alchemist and Builder runtime
-- [ ] Context assembly across project, knowledge, and memory
-- [ ] Intent normalization and plan representation
-- [ ] Read-only repository inspection workflow
-- [ ] Permission checks immediately before tool execution
-- [ ] Approval-gated write operations
-- [ ] Validation, documentation, and outcome reporting
+## v0.8 — Builder Agent vertical slice
+- [x] Policy-gated tool execution boundary
+- [x] Denied and approval-pending calls stop before executor invocation
+- [x] Trusted approval evidence verification fails closed
+- [x] Execution outcomes create audit events
+- [ ] Repository read adapter and safe path constraints
+- [ ] Read-only Builder workflow: observe, load context, plan, inspect
+- [ ] Output contract validation and execution reporting
+- [ ] Approval-gated repository write adapter
+- [ ] Durable run checkpoints and recovery
 
 ## v0.9 — Agent Guild
 - [ ] Thinkers
