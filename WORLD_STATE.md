@@ -1,55 +1,51 @@
 # World State
 
-Phase: v0.6 Core Contracts
-
-Current milestone: shared domain contracts for the world model, persistent knowledge and memory, bounded agents, capabilities, permissions, and runtime execution records.
+Phase: v0.7 Policy & Event Integrity
 
 ## Established
 
-- ALCHEMIST WORLD is an AI-native world and workspace, not merely a dashboard skin.
-- The Alchemist is the central orchestrator.
-- Persistent Knowledge, Persistent Memory, Project Memory, and Runtime Memory are distinct concerns.
-- The Transmutation Engine converts intent into plans and validated outcomes.
+- ALCHEMIST WORLD is an AI-native world and workspace.
+- The Alchemist orchestrates intent, context, bounded agents, and transmutation.
+- Persistent Knowledge, Persistent Memory, Project Memory, and Runtime Memory are separate concerns.
 - The Agent Guild consists of Thinkers, Builders, Guardians, Messengers, Observers, and Explorers.
-- Skills define reusable capability contracts; Tools define concrete operations; Permissions define authority.
-- Builder Agent is the first major execution agent.
-- Runtime / Execution owns active workflow state.
-- Ouroboros proposes evidence-based lessons from observed outcomes.
+- Skills define reusable capability contracts; Tools define operations; Permissions define authority.
+- Builder Agent is the first end-to-end execution target.
+- Ouroboros proposes evidence-based lessons from outcomes.
 
 ## Implemented in Core
 
-- Entity, Relationship, and WorldEvent contracts with branded identifiers.
-- Validated constructors for core domain objects.
-- KnowledgeItem with source attribution, scope, status, tags, and version.
-- MemoryRecord with episodic / semantic / procedural kinds, scope, confidence, and source event references.
-- SkillDefinition and ToolDefinition contracts.
-- PermissionGrant data contract with expiry and validation.
-- AgentDefinition with explicit skills, tools, permissions, constraints, triggers, and memory access.
-- RuntimeRun with status, checkpoints, and lifecycle timestamps.
-- Intent-to-memory vertical-slice planner.
-- Automated GitHub Actions quality workflow: lint, typecheck, tests, and build passed on commit 3dd90fe.
+- Entity, Relationship, and WorldEvent contracts with branded IDs and constructors.
+- KnowledgeItem and MemoryRecord contracts with provenance, scope, lifecycle, and validation.
+- SkillDefinition, ToolDefinition, PermissionGrant, and AgentDefinition contracts.
+- RuntimeRun and execution checkpoints.
+- Deterministic default-deny policy evaluator.
+- Explicit deny precedence across matching grants.
+- Exact and prefix resource matching; primitive context conditions.
+- Approval-required policy result.
+- In-memory append-only event log with unique IDs, sequence numbers, hash chaining, integrity verification, and replay.
+- Audit event types for permission denial, approval, tool execution, and agent run lifecycle.
+- Automated CI passed lint, typecheck, tests, and build on commit 3dd90fe before the v0.7 additions.
 
-## In progress
+## Current validation
 
-- Permission policy evaluator and deny precedence.
-- Event log and audit boundary.
-- Tool execution and approval workflow.
-- Skill registry and loading boundary.
-- Persistence adapter and schema evolution.
-- Periodic full-repository ZIP checkpoints.
+- v0.7 policy and event-log tests have been added.
+- CI for the latest changes is pending; do not treat the v0.7 implementation as validated until the workflow completes successfully.
+- Event-log checksum is for accidental mutation detection only; it is not cryptographic or tamper-proof.
+- Persistence, trusted approval, and policy administration are not implemented.
 
 ## Next
 
-1. Implement the policy evaluator: subject + action + resource + conditions + expiry.
-2. Add an append-only WorldEvent store and replay contract.
-3. Build the first read-only Builder Agent runtime flow.
-4. Add approval-gated write operations.
-5. Implement Ouroboros outcome capture and review.
-6. Create the next ZIP checkpoint after the first runnable Builder vertical slice.
+1. Validate v0.7 through CI and resolve any failures.
+2. Add trusted runtime context and approval evidence boundaries.
+3. Build the read-only Builder Agent flow.
+4. Connect tool invocation to policy evaluation and audit events.
+5. Add approval-gated repository writes.
+6. Prepare the first complete ZIP checkpoint after the runnable Builder vertical slice.
 
 ## Open
 
-- Persistence technology and migration strategy.
-- Permission conflict resolution and approval UX.
-- Memory retention, knowledge deprecation, and conflict resolution.
-- Runtime orchestration boundary and tool adapter model.
+- Durable event store, transactions, concurrency, and replay recovery.
+- Policy administration and conflict-resolution rules.
+- Trusted approval service and credential boundaries.
+- Persistence technology and migrations.
+- Knowledge and memory retention, conflict resolution, and deprecation.
