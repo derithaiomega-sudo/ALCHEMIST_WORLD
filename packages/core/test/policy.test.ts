@@ -78,6 +78,12 @@ describe("policy evaluator", () => {
     expect(result.reason).toBe("explicit_deny");
   });
 
+  it("rejects actions that do not match the tool effect", () => {
+    const result = evaluatePolicy({ ...base, action: "delete" });
+    expect(result.decision).toBe("deny");
+    expect(result.reason).toBe("action_mismatch");
+  });
+
   it("denies when a required context condition does not match", () => {
     const result = evaluatePolicy({ ...base, context: { environment: "production" } });
     expect(result.decision).toBe("deny");
