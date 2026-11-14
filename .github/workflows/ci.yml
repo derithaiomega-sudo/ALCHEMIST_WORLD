@@ -25,17 +25,13 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@d7f3a2b1c4e5f60718293a4b5c6d7e8f90123456 # v7
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version: 24
-          cache: npm
           package-manager-cache: false
 
-      - name: Verify lockfile
-        run: test -f package-lock.json
-
-      - name: Install
-        run: npm ci
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
       - name: Lint
         run: npm run lint
