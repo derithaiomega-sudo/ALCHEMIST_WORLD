@@ -1,4 +1,3 @@
-import type { EntityId } from "./entity.js";
 import type { AgentDefinition } from "./agent.js";
 import type {
   PermissionAction,
