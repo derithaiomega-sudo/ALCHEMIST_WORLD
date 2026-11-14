@@ -71,15 +71,9 @@ export async function executeBuilderTool<TInput, TOutput>(
     return Object.freeze({ status: "waiting_approval", policy });
   }
 
+  let output: TOutput;
   try {
-    const output = await executor.execute(call.policy.tool, call.input);
-    eventLog.append(createWorldEvent({
-      id: call.auditEventIds.executed,
-      type: "tool.executed",
-      actorId,
-      payload: { toolId, outcome: "succeeded" },
-    }, call.occurredAt));
-    return Object.freeze({ status: "succeeded", policy, output });
+    output = await executor.execute(call.policy.tool, call.input);
   } catch (error) {
     const errorName = error instanceof Error ? error.name : "UnknownError";
     eventLog.append(createWorldEvent({
@@ -90,4 +84,12 @@ export async function executeBuilderTool<TInput, TOutput>(
     }, call.occurredAt));
     return Object.freeze({ status: "failed", policy, errorName });
   }
+
+  eventLog.append(createWorldEvent({
+    id: call.auditEventIds.executed,
+    type: "tool.executed",
+    actorId,
+    payload: { toolId, outcome: "succeeded" },
+  }, call.occurredAt));
+  return Object.freeze({ status: "succeeded", policy, output });
 }
