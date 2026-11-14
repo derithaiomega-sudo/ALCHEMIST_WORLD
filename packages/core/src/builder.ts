@@ -8,6 +8,18 @@ export interface ToolExecutor<TInput, TOutput> {
   execute(tool: ToolDefinition, input: TInput): Promise<TOutput>;
 }
 
+export interface ApprovalVerificationRequest {
+  readonly evidenceId: string;
+  readonly agentId: EntityId;
+  readonly toolId: string;
+  readonly action: PolicyRequest["action"];
+  readonly resource: string;
+}
+
+export interface ApprovalVerifier {
+  verify(request: ApprovalVerificationRequest): Promise<boolean>;
+}
+
 export interface ToolAuditEventIds {
   readonly denied: EventId;
   readonly approvalRequested: EventId;
@@ -19,6 +31,7 @@ export interface BuilderToolCall<TInput> {
   readonly input: TInput;
   readonly auditEventIds: ToolAuditEventIds;
   readonly occurredAt: string;
+  readonly approvalEvidenceId?: string;
 }
 
 export type BuilderToolCallResult<TOutput> =
@@ -36,8 +49,24 @@ export async function executeBuilderTool<TInput, TOutput>(
   call: BuilderToolCall<TInput>,
   executor: ToolExecutor<TInput, TOutput>,
   eventLog: InMemoryEventLog,
+  approvalVerifier?: ApprovalVerifier,
 ): Promise<BuilderToolCallResult<TOutput>> {
-  const policy = evaluatePolicy(call.policy);
+  // Approval flags supplied in the request are never trusted at this boundary.
+  let policy = evaluatePolicy({ ...call.policy, approvalGranted: false });
+  if (policy.decision === "requires_approval"
+    && call.approvalEvidenceId !== undefined
+    && approvalVerifier !== undefined) {
+    const verified = await approvalVerifier.verify({
+      evidenceId: call.approvalEvidenceId,
+      agentId: call.policy.agent.id,
+      toolId: call.policy.tool.id,
+      action: call.policy.action,
+      resource: call.policy.resource,
+    });
+    if (verified) {
+      policy = evaluatePolicy({ ...call.policy, approvalGranted: true });
+    }
+  }
   const actorId: EntityId = call.policy.agent.id;
   const toolId = call.policy.tool.id;
 
