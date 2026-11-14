@@ -8,6 +8,7 @@ export interface EventEnvelope<TPayload extends Record<string, unknown> = Record
 }
 
 function canonicalize(value: unknown): string {
+  if (value === undefined) return "undefined";
   if (value === null || typeof value !== "object") return JSON.stringify(value);
   if (Array.isArray(value)) return `[${value.map(canonicalize).join(",")}]`;
   const record = value as Record<string, unknown>;
@@ -22,6 +23,16 @@ function hashText(value: string): string {
     hash = Math.imul(hash, 16777619);
   }
   return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
+function cloneAndFreeze<T>(value: T): T {
+  if (value === null || typeof value !== "object") return value;
+  if (Array.isArray(value)) {
+    return Object.freeze(value.map((item) => cloneAndFreeze(item))) as T;
+  }
+  const clone = Object.fromEntries(Object.entries(value as Record<string, unknown>)
+    .map(([key, item]) => [key, cloneAndFreeze(item)]));
+  return Object.freeze(clone) as T;
 }
 
 function eventHash(sequence: number, previousHash: string, event: WorldEvent): string {
@@ -48,7 +59,7 @@ export class InMemoryEventLog {
       sequence,
       previousHash,
       hash,
-      event: Object.freeze({ ...event, payload: Object.freeze({ ...event.payload }) }),
+      event: cloneAndFreeze(event),
     });
     this.entries.push(envelope);
     this.eventIds.add(event.id);
