@@ -1,35 +1,10 @@
-import {
-  createInitialSliceState,
-  isSliceComplete,
-  stableSliceChecksum,
-} from "../src/vertical-slice";
+import { describe, expect, it } from "vitest";
+import { buildVerticalSlice } from "../src/vertical-slice.js";
 
 describe("vertical slice", () => {
-  it("starts in bootstrap with no progression", () => {
-    const state = createInitialSliceState();
-    expect(state.phase).toBe("bootstrap");
-    expect(state.fireEssence).toBe(0);
-    expect(state.waterEssence).toBe(0);
-    expect(isSliceComplete(state)).toBe(false);
-  });
-
-  it("requires every release-candidate milestone", () => {
-    const state = {
-      ...createInitialSliceState(),
-      phase: "complete" as const,
-      firstTransmutationComplete: true,
-      combatComplete: true,
-      essenceStationBuilt: true,
-      elementLakeUnlocked: true,
-      saveComplete: true,
-      replayVerified: true,
-    };
-    expect(isSliceComplete(state)).toBe(true);
-  });
-
-  it("produces a stable checksum for identical canonical state", () => {
-    const a = createInitialSliceState();
-    const b = createInitialSliceState();
-    expect(stableSliceChecksum(a)).toBe(stableSliceChecksum(b));
+  it("builds the intent-to-memory sequence", () => {
+    const result = buildVerticalSlice("Create a project");
+    expect(result.steps[0]?.name).toBe("intent");
+    expect(result.steps.at(-1)?.name).toBe("memory");
   });
 });
