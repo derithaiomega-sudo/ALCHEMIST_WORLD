@@ -20,3 +20,14 @@ export function relationshipId(value: string): RelationshipId {
 export function eventId(value: string): EventId {
   return validateId(value, "event id") as EventId;
 }
+
+export type KnowledgeId = import("./entity.js").Brand<string, "KnowledgeId">;
+export type MemoryId = import("./entity.js").Brand<string, "MemoryId">;
+
+export function knowledgeId(value: string): KnowledgeId {
+  return validateId(value, "knowledge id") as KnowledgeId;
+}
+
+export function memoryId(value: string): MemoryId {
+  return validateId(value, "memory id") as MemoryId;
+}
