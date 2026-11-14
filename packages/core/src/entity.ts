@@ -62,3 +62,62 @@ export interface WorldEvent<TPayload extends Record<string, unknown> = Record<st
   readonly subjectId?: EntityId;
   readonly payload: Readonly<TPayload>;
 }
+
+function assertNonEmpty(value: string, label: string): void {
+  if (value.trim().length === 0) throw new Error(`${label} must not be empty.`);
+}
+
+function assertIsoTimestamp(value: string, label: string): void {
+  if (!Number.isFinite(Date.parse(value)) || !/^\d{4}-\d{2}-\d{2}T/.test(value)) {
+    throw new Error(`${label} must be a valid ISO-8601 timestamp.`);
+  }
+}
+
+export type NewEntity<TData extends Record<string, unknown> = Record<string, unknown>> =
+  Omit<Entity<TData>, "createdAt" | "updatedAt"> & {
+    readonly createdAt?: string;
+    readonly updatedAt?: string;
+  };
+
+export function createEntity<TData extends Record<string, unknown>>(
+  input: NewEntity<TData>,
+  now = new Date().toISOString(),
+): Entity<TData> {
+  assertNonEmpty(input.name, "Entity name");
+  assertIsoTimestamp(now, "Current timestamp");
+  const createdAt = input.createdAt ?? now;
+  const updatedAt = input.updatedAt ?? createdAt;
+  assertIsoTimestamp(createdAt, "Entity createdAt");
+  assertIsoTimestamp(updatedAt, "Entity updatedAt");
+  if (Date.parse(updatedAt) < Date.parse(createdAt)) {
+    throw new Error("Entity updatedAt cannot be earlier than createdAt.");
+  }
+  return Object.freeze({ ...input, data: Object.freeze({ ...input.data }), createdAt, updatedAt });
+}
+
+export type NewRelationship = Omit<Relationship, "createdAt"> & { readonly createdAt?: string };
+
+export function createRelationship(
+  input: NewRelationship,
+  now = new Date().toISOString(),
+): Relationship {
+  assertIsoTimestamp(now, "Current timestamp");
+  assertIsoTimestamp(input.createdAt ?? now, "Relationship createdAt");
+  return Object.freeze({
+    ...input,
+    properties: Object.freeze({ ...input.properties }),
+    createdAt: input.createdAt ?? now,
+  });
+}
+
+export type NewWorldEvent<TPayload extends Record<string, unknown> = Record<string, unknown>> =
+  Omit<WorldEvent<TPayload>, "occurredAt"> & { readonly occurredAt?: string };
+
+export function createWorldEvent<TPayload extends Record<string, unknown>>(
+  input: NewWorldEvent<TPayload>,
+  now = new Date().toISOString(),
+): WorldEvent<TPayload> {
+  const occurredAt = input.occurredAt ?? now;
+  assertIsoTimestamp(occurredAt, "Event occurredAt");
+  return Object.freeze({ ...input, payload: Object.freeze({ ...input.payload }), occurredAt });
+}
