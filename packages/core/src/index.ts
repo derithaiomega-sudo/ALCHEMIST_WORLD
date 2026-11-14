@@ -7,3 +7,4 @@ export * from "./capabilities.js";
 export * from "./runtime.js";
 export * from "./policy.js";
 export * from "./event-log.js";
+export * from "./builder.js";
