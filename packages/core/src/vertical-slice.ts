@@ -1,5 +1,3 @@
-import type { Entity, EntityId, WorldEvent } from "./entity.js";
-import { entityId, eventId } from "./ids.js";
 
 export interface VerticalSliceStep {
   readonly name: "intent" | "project" | "context" | "plan" | "change" | "validation" | "documentation" | "memory" | "report";
@@ -90,21 +88,4 @@ export function stableSliceChecksum(state: SliceState): string {
     hash = Math.imul(hash, 16777619);
   }
   return (hash >>> 0).toString(16).padStart(8, "0");
-}
-
-// Keep these imports exercised by the domain-level example below and document
-// how the workflow can be represented in the world event model.
-export function createSliceStartedEvent(actor: Entity): WorldEvent<{ intent: string }> {
-  const timestamp = new Date().toISOString();
-  return {
-    id: eventId(`evt_${Date.now().toString(36)}`),
-    type: "agent.action.completed",
-    occurredAt: timestamp,
-    actorId: actor.id as EntityId,
-    payload: { intent: "vertical-slice-started" },
-  };
-}
-
-export function createSliceProjectId(value: string): EntityId {
-  return entityId(value);
 }
