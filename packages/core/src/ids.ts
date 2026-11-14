@@ -31,3 +31,24 @@ export function knowledgeId(value: string): KnowledgeId {
 export function memoryId(value: string): MemoryId {
   return validateId(value, "memory id") as MemoryId;
 }
+
+export type SkillId = import("./entity.js").Brand<string, "SkillId">;
+export type ToolId = import("./entity.js").Brand<string, "ToolId">;
+export type PermissionId = import("./entity.js").Brand<string, "PermissionId">;
+export type RunId = import("./entity.js").Brand<string, "RunId">;
+
+export function skillId(value: string): SkillId {
+  return validateId(value, "skill id") as SkillId;
+}
+
+export function toolId(value: string): ToolId {
+  return validateId(value, "tool id") as ToolId;
+}
+
+export function permissionId(value: string): PermissionId {
+  return validateId(value, "permission id") as PermissionId;
+}
+
+export function runId(value: string): RunId {
+  return validateId(value, "run id") as RunId;
+}
