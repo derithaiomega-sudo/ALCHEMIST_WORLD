@@ -2,7 +2,7 @@
 
 AI-native operating environment for turning intent into reality.
 
-Version: 0.5-architecture-baseline
+Version: 0.7-policy-event-integrity
 
 Source of truth: this repository plus its versioned project memory and, as implemented, structured World Memory.
 
