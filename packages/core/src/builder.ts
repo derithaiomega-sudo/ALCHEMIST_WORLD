@@ -56,13 +56,20 @@ export async function executeBuilderTool<TInput, TOutput>(
   if (policy.decision === "requires_approval"
     && call.approvalEvidenceId !== undefined
     && approvalVerifier !== undefined) {
-    const verified = await approvalVerifier.verify({
-      evidenceId: call.approvalEvidenceId,
-      agentId: call.policy.agent.id,
-      toolId: call.policy.tool.id,
-      action: call.policy.action,
-      resource: call.policy.resource,
-    });
+    let verified = false;
+    if (call.approvalEvidenceId.trim().length > 0) {
+      try {
+        verified = await approvalVerifier.verify({
+          evidenceId: call.approvalEvidenceId,
+          agentId: call.policy.agent.id,
+          toolId: call.policy.tool.id,
+          action: call.policy.action,
+          resource: call.policy.resource,
+        });
+      } catch {
+        verified = false;
+      }
+    }
     if (verified) {
       policy = evaluatePolicy({ ...call.policy, approvalGranted: true });
     }
