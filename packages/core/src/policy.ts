@@ -9,6 +9,7 @@ export type PolicyDecision = "allow" | "deny" | "requires_approval";
 export type PolicyReason =
   | "agent_inactive"
   | "tool_not_assigned"
+  | "action_mismatch"
   | "permission_not_assigned"
   | "no_matching_allow_grant"
   | "explicit_deny"
@@ -34,6 +35,13 @@ export interface PolicyResult {
   readonly reason: PolicyReason;
   readonly matchedGrantIds: readonly string[];
   readonly evaluatedAt: string;
+}
+
+function isActionCompatible(effect: ToolDefinition["effect"], action: PermissionAction): boolean {
+  if (effect === "read") return action === "read";
+  if (effect === "write") return action === "create" || action === "update";
+  if (effect === "external") return action === "publish" || action === "execute";
+  return action === "delete";
 }
 
 function matchesResource(pattern: string, resource: string): boolean {
@@ -77,6 +85,9 @@ export function evaluatePolicy(request: PolicyRequest): PolicyResult {
   }
   if (!request.agent.toolIds.includes(request.tool.id)) {
     return result("deny", "tool_not_assigned", [], request.now);
+  }
+  if (!isActionCompatible(request.tool.effect, request.action) || request.resource.trim().length === 0) {
+    return result("deny", "action_mismatch", [], request.now);
   }
   if (request.tool.requiredPermissionIds.length === 0
     || request.tool.requiredPermissionIds.some((id) => !request.agent.permissionIds.includes(id))) {
