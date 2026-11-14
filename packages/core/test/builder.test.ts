@@ -4,6 +4,7 @@ import { executeBuilderTool } from "../src/builder.js";
 import { createPermissionGrant, createToolDefinition } from "../src/capabilities.js";
 import { InMemoryEventLog } from "../src/event-log.js";
 import { entityId, eventId, permissionId, toolId } from "../src/ids.js";
+import type { PolicyRequest } from "../src/policy.js";
 
 const timestamp = "2026-11-14T03:00:00.000Z";
 const agent = createAgentDefinition({
@@ -40,7 +41,7 @@ const grant = createPermissionGrant({
   createdAt: "2026-11-14T00:00:00.000Z",
 });
 
-function call(suffix: string, overrides: Record<string, unknown> = {}) {
+function call(suffix: string, overrides: Partial<PolicyRequest> = {}) {
   return {
     policy: {
       agent,
