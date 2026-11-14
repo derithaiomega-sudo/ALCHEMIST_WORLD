@@ -2,52 +2,54 @@
 
 Phase: v0.6 Core Contracts
 
-Current milestone: establish shared domain contracts for entities, relationships, events, persistent knowledge, persistent memory, and the first intent-to-memory workflow.
+Current milestone: shared domain contracts for the world model, persistent knowledge and memory, bounded agents, capabilities, permissions, and runtime execution records.
 
 ## Established
 
 - ALCHEMIST WORLD is an AI-native world and workspace, not merely a dashboard skin.
 - The Alchemist is the central orchestrator.
-- Persistent Knowledge and Persistent Memory are distinct subsystems.
-- Project Memory is the versioned repository source of truth.
-- Runtime Memory is temporary and scoped to active execution.
+- Persistent Knowledge, Persistent Memory, Project Memory, and Runtime Memory are distinct concerns.
 - The Transmutation Engine converts intent into plans and validated outcomes.
 - The Agent Guild consists of Thinkers, Builders, Guardians, Messengers, Observers, and Explorers.
-- Skills, Tools, and Permissions are separate architectural concerns.
+- Skills define reusable capability contracts; Tools define concrete operations; Permissions define authority.
 - Builder Agent is the first major execution agent.
-- Runtime / Execution owns workflow execution state.
-- Ouroboros closes the loop through auditable, evidence-based learning.
-- Core domain contracts now include Entity, Relationship, WorldEvent, KnowledgeItem, and MemoryRecord.
+- Runtime / Execution owns active workflow state.
+- Ouroboros proposes evidence-based lessons from observed outcomes.
 
 ## Implemented in Core
 
-- Branded identifiers for entities, relationships, events, knowledge, and memory.
-- Constructors with input validation for entities, relationships, events, knowledge items, and memory records.
-- Persistent knowledge scopes: world, project, agent.
-- Persistent memory kinds: episodic, semantic, procedural.
-- Persistent memory scopes: world, project, agent.
+- Entity, Relationship, and WorldEvent contracts with branded identifiers.
+- Validated constructors for core domain objects.
+- KnowledgeItem with source attribution, scope, status, tags, and version.
+- MemoryRecord with episodic / semantic / procedural kinds, scope, confidence, and source event references.
+- SkillDefinition and ToolDefinition contracts.
+- PermissionGrant data contract with expiry and validation.
+- AgentDefinition with explicit skills, tools, permissions, constraints, triggers, and memory access.
+- RuntimeRun with status, checkpoints, and lifecycle timestamps.
 - Intent-to-memory vertical-slice planner.
-- Tests authored for domain contracts and lifecycle invariants.
+- Automated GitHub Actions quality workflow: lint, typecheck, tests, and build passed on commit 3dd90fe.
 
 ## In progress
 
-- Verify CI, package install, lint, typecheck, and tests in a real Node environment.
-- Review event vocabulary and constructor validation.
-- Define skill, tool, permission, and agent contracts.
-- Prepare periodic ZIP checkpoints of the full repository.
+- Permission policy evaluator and deny precedence.
+- Event log and audit boundary.
+- Tool execution and approval workflow.
+- Skill registry and loading boundary.
+- Persistence adapter and schema evolution.
+- Periodic full-repository ZIP checkpoints.
 
 ## Next
 
-1. Add Agent, Skill, Tool, Permission, and RuntimeRun contracts.
-2. Add an event log / append-only audit boundary.
-3. Implement Builder Agent as a policy-gated workflow.
-4. Add Ouroboros outcome capture and candidate-learning review.
-5. Create the first full project ZIP checkpoint after the next coherent milestone.
+1. Implement the policy evaluator: subject + action + resource + conditions + expiry.
+2. Add an append-only WorldEvent store and replay contract.
+3. Build the first read-only Builder Agent runtime flow.
+4. Add approval-gated write operations.
+5. Implement Ouroboros outcome capture and review.
+6. Create the next ZIP checkpoint after the first runnable Builder vertical slice.
 
 ## Open
 
-- Persistence technology and schema evolution.
-- Permission policy representation and approval UX.
-- Runtime orchestration boundary.
-- Knowledge retention, memory retention, and conflict resolution policies.
-- CI dependency lockfile and action pin verification.
+- Persistence technology and migration strategy.
+- Permission conflict resolution and approval UX.
+- Memory retention, knowledge deprecation, and conflict resolution.
+- Runtime orchestration boundary and tool adapter model.
