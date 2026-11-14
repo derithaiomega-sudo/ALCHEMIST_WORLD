@@ -15,7 +15,8 @@ export type PolicyReason =
   | "explicit_deny"
   | "grant_expired"
   | "grant_not_yet_valid"
-  | "approval_required";
+  | "approval_required"
+  | "policy_satisfied";
 
 export interface PolicyRequest {
   readonly agent: AgentDefinition;
@@ -90,7 +91,7 @@ export function evaluatePolicy(request: PolicyRequest): PolicyResult {
     && matchesConditions(grant.conditions, request.context));
 
   const explicitDeny = applicable.filter((grant) =>
-    grant.effect === "deny" && request.agent.permissionIds.includes(grant.id));
+    grant.effect === "deny");
   if (explicitDeny.length > 0) {
     return result("deny", "explicit_deny", explicitDeny.map((grant) => grant.id), request.now);
   }
@@ -128,5 +129,5 @@ export function evaluatePolicy(request: PolicyRequest): PolicyResult {
     return result("requires_approval", "approval_required", activeAllows.map((grant) => grant.id), request.now);
   }
 
-  return result("allow", "no_matching_allow_grant", activeAllows.map((grant) => grant.id), request.now);
+  return result("allow", "policy_satisfied", activeAllows.map((grant) => grant.id), request.now);
 }
