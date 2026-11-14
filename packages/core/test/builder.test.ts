@@ -19,45 +19,6 @@ const agent = createAgentDefinition({
   constraints: ["Read-only unless explicitly approved"],
   triggers: [],
   outputContract: {},
-  it("requires trusted approval evidence and ignores caller-supplied approval flags", async () => {
-    let calls = 0;
-    const log = new InMemoryEventLog();
-    const forged = call("forged", { approvalRequired: true, approvalGranted: true });
-    const pending = await executeBuilderTool(
-      forged,
-      { execute: async () => { calls++; return "unexpected"; } },
-      log,
-    );
-    expect(pending.status).toBe("waiting_approval");
-    expect(calls).toBe(0);
-
-    const approved = {
-      ...call("trusted", { approvalRequired: true, approvalGranted: true }),
-      approvalEvidenceId: "approval_receipt_001",
-    };
-    const result = await executeBuilderTool(
-      approved,
-      { execute: async () => { calls++; return "approved output"; } },
-      log,
-      { verify: async (request) => request.evidenceId === "approval_receipt_001" },
-    );
-    expect(result.status).toBe("succeeded");
-    expect(calls).toBe(1);
-  });
-
-  it("fails closed if the trusted approval verifier is unavailable", async () => {
-    let calls = 0;
-    const log = new InMemoryEventLog();
-    const result = await executeBuilderTool(
-      { ...call("verifier_down", { approvalRequired: true }), approvalEvidenceId: "approval_receipt_002" },
-      { execute: async () => { calls++; return "unexpected"; } },
-      log,
-      { verify: async () => { throw new Error("approval service unavailable"); } },
-    );
-    expect(result.status).toBe("waiting_approval");
-    expect(calls).toBe(0);
-  });
-
 });
 const tool = createToolDefinition({
   id: toolId("tool_read_repo"),
@@ -143,10 +104,7 @@ describe("Builder policy-gated execution", () => {
     expect(result.status).toBe("succeeded");
     if (result.status === "succeeded") expect(result.output.content).toBe("contents of README.md");
     expect(log.readAll()[0]?.event.type).toBe("tool.executed");
-    expect(log.readAll()[0]?.event.payload).toEqual({
-      toolId: tool.id,
-      outcome: "succeeded",
-    });
+    expect(log.readAll()[0]?.event.payload).toEqual({ toolId: tool.id, outcome: "succeeded" });
     expect(log.verify()).toBe(true);
   });
 
@@ -165,5 +123,44 @@ describe("Builder policy-gated execution", () => {
       outcome: "failed",
       errorName: "Error",
     });
+  });
+
+  it("requires trusted approval evidence and ignores caller-supplied approval flags", async () => {
+    let calls = 0;
+    const log = new InMemoryEventLog();
+    const forged = call("forged", { approvalRequired: true, approvalGranted: true });
+    const pending = await executeBuilderTool(
+      forged,
+      { execute: async () => { calls++; return "unexpected"; } },
+      log,
+    );
+    expect(pending.status).toBe("waiting_approval");
+    expect(calls).toBe(0);
+
+    const approved = {
+      ...call("trusted", { approvalRequired: true, approvalGranted: true }),
+      approvalEvidenceId: "approval_receipt_001",
+    };
+    const result = await executeBuilderTool(
+      approved,
+      { execute: async () => { calls++; return "approved output"; } },
+      log,
+      { verify: async (request) => request.evidenceId === "approval_receipt_001" },
+    );
+    expect(result.status).toBe("succeeded");
+    expect(calls).toBe(1);
+  });
+
+  it("fails closed if the trusted approval verifier is unavailable", async () => {
+    let calls = 0;
+    const log = new InMemoryEventLog();
+    const result = await executeBuilderTool(
+      { ...call("verifier_down", { approvalRequired: true }), approvalEvidenceId: "approval_receipt_002" },
+      { execute: async () => { calls++; return "unexpected"; } },
+      log,
+      { verify: async () => { throw new Error("approval service unavailable"); } },
+    );
+    expect(result.status).toBe("waiting_approval");
+    expect(calls).toBe(0);
   });
 });
