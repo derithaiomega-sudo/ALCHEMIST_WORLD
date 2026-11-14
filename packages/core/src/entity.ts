@@ -55,6 +55,12 @@ export type WorldEventType =
   | "knowledge.created"
   | "knowledge.updated"
   | "memory.recalled"
+  | "permission.denied"
+  | "approval.requested"
+  | "approval.granted"
+  | "tool.executed"
+  | "agent.run.started"
+  | "agent.run.completed"
   | "agent.action.completed";
 
 export interface WorldEvent<TPayload extends Record<string, unknown> = Record<string, unknown>> {
